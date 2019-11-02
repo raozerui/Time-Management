@@ -1,0 +1,76 @@
+.side-bar {
+  position: fixed;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  width: 300px;
+  left: 0;
+  top: 0;
+  transition: left .4s;
+  box-shadow: 0 10px 40px 5px rgba(0,0,0,0.5);
+}
+.side-bar-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background-size: cover;
+  background-position: center center;
+  background-image: url(http://www.desktx.com/d/file/phone/meinv/20180718/745133a27389cc3bce062e872161020b.jpg);
+}
+.side-bar-mock {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  background: rgba(36,60,4,.3);
+}
+
+.drawer{
+  width: 300px;
+  flex-shrink: 0;
+  background: transparent !important;
+}
+.drawer-paper{
+  width: 300px;
+  background: transparent !important;
+}
+.side-header {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+.side-button {
+  width: 75% !important;
+  margin: 0 auto !important;
+  background: linear-gradient(60deg, #ec407a, #d81b60);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0,.14), 0 7px 10px -5px rgba(233, 30, 99,.4);
+}
+
+.big-avatar{
+  width: 100px !important;
+  height: 100px !important;
+  margin: 20px auto;
+}
+.user-name {
+  text-align: center;
+  font-size: 1rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.00938em;
+}
+.active-button {
+  background-color: #4caf50 !important;
+}
+.normal-button {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  color: #ffffff;
+  font-size: 16px;
+  -webkit-transition: all .6s;
+  transition: all .6s;
+  border-radius: 4px;
+  padding: 14px 20px;
+}

@@ -1,0 +1,9 @@
+.rotate-icon {
+  transform: rotateY(180deg);
+}
+.select-mount {
+  width: 80px;
+}
+.text-input {
+  width: 50px;
+}

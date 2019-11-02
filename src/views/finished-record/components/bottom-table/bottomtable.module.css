@@ -1,0 +1,24 @@
+.card-table {
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+}
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 76px;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.add-button {
+  height: 56px;
+  background: linear-gradient(60deg, #66bb6a, #43a047);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0,.14), 0 7px 10px -5px rgba(76, 175, 80,.4);
+}
+.page-box {
+  display: flex;
+  align-items: center;
+  height: 56px;
+}
