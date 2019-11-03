@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useReducer } from 'react'
 import style from './headerbutton.module.css'
 import classnames from 'classnames'
+import {RecordStore} from '../../../../core/context'
+
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -21,42 +23,64 @@ const theme = createMuiTheme({
   },
 });
 
+
+
 export function HeaderButton() {
+  const {state:{tagList}, dispatch}= useContext(RecordStore)
   const [isAdd, setIsAdd] = useState<boolean>(false)
 
-  const createTag = ()=>{
-    setIsAdd(true)
+
+  const createTag = (tag: string)=>{
+    setIsAdd(false)
+    for(let i = 0; i < tagList.length ; i++) {
+      if(tagList[i].tag === tag) {
+        alert('标签重复')
+        return
+      }
+    }
+
+    dispatch({
+      type: 'AddTag',
+      payload: tag
+    })
   }
 
   return (
     <>
-    <GridItem xs={12} sm={6} md={3} style={{height:'100%'}}>
-      <Card style={{height:'100%'}}>
+      <Card className={style['card']}>
         <Button
           variant="outlined"
           size="large"
           className={classnames(style['button'])}
           endIcon={<BorderColorIcon />}
-          onClick={createTag}
+          onClick={()=>{setIsAdd(true)}}
         >
           新建标签
         </Button>
       </Card>
-    </GridItem>
-    <Input isOpen={isAdd} CloseEvent={()=>setIsAdd(false)}/>
+    <TagInput 
+      isOpen={isAdd} 
+      CloseEvent={()=>setIsAdd(false)}
+      SaveEvent={(tag:string)=>createTag(tag)}/>
     </>
   )
 }
 
 
 export interface InputProps {
-  isOpen: boolean;
-  CloseEvent: () => void;
+  isOpen: boolean
+  CloseEvent: () => void
+  SaveEvent: (tag:string)=>void
 }
-const Input = (props: InputProps)=>{
-  const { CloseEvent, isOpen } = props
+
+const TagInput = (props: InputProps)=>{
+  const { CloseEvent, SaveEvent, isOpen} = props
+  const [val, setVal] = useState<string>('')
   
-  const handleSave =()=>{}
+  const handleSave =()=>{
+    SaveEvent(val)
+    setVal('')
+  }
   
   return (
     <Modal open={isOpen}>
@@ -65,8 +89,9 @@ const Input = (props: InputProps)=>{
           <TextField
             className={style['text-input']}
             label="新增标签"
+            value={val}
+            onChange={(event)=>setVal(event.target.value)}
             variant="outlined"
-            id="mui-theme-provider-outlined-input"
           />
         </ThemeProvider>
 

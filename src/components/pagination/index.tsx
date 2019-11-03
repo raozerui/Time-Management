@@ -26,37 +26,46 @@ const theme = createMuiTheme({
 
 
 export interface PaginationProps {
-  allMount: number,
-  currentMount: number,
+  allAmount: number,
+  currentAmount: number,
   currentPage: number,
-  className: string
+  className: string,
+  changePage: (num:number)=>any,
+  changeMount: (num:number)=>any
 }
 export function Pagination(props: PaginationProps) {
-  const {allMount, currentMount, currentPage, className} = props
+  const {allAmount, currentAmount, currentPage, className, changeMount, changePage} = props
   const [pages, setPages] = useState<number>(1)
 
   useEffect(()=>{
-    setPages(Math.ceil(allMount / currentMount))
-  },[allMount, currentMount])
+    setPages(Math.ceil(allAmount / currentAmount))
+  },[allAmount, currentAmount])
 
   const jumpToFirst = ()=>{
-    // 交给外界去更新
+    changePage(1)
   }
 
   const jumpToEnd = ()=>{
-    // 交给外界去更新
+    changePage(pages)
   }
 
   const jumpToPrev = ()=>{
-
+    changePage(currentPage - 1)
   }
 
   const jumpToNext = ()=>{
-
+    changePage(currentPage + 1)
   }
 
-  const jumpToPage = (num:number)=>{
-
+  const jumpToPage =(num:number)=>{
+    if(num > pages) {
+      jumpToEnd()
+    }else if(num < 1) {
+      jumpToFirst()
+    }else {
+      changePage(num)
+    }
+      
   }
 
   return (
@@ -65,7 +74,8 @@ export function Pagination(props: PaginationProps) {
       <Select
         labelId="simple-select-filled-label"
         id="simple-select-filled"
-        value={currentMount}
+        value={currentAmount}
+        onChange={(event)=>changeMount(Number(event.target.value))}
       >
         {/* 全局数据在这里渲染一个列表 */}
         {['5','10','20'].map((item, index)=>
@@ -98,7 +108,6 @@ export function Pagination(props: PaginationProps) {
         className={style['text-input']}
         label={'当前页'}
         value={currentPage}
-        id="mui-theme-provider-outlined-input"
         onChange={(event)=>jumpToPage(Number(event.target.value))}
       />
     </ThemeProvider>

@@ -10,20 +10,24 @@ import GridItem from '../grid'
 
 export interface TimepickerProps {
   labalText?: string
-  initTime?: Date 
+  initTime?: Date
+  updateTime: (i:number)=>any
 }
 
 export function Timepicker(props: TimepickerProps) {
+  const {labalText, initTime, updateTime} = props
   const [selectedTime, setSelectedTime] = useState(new Date())
-  const {labalText, initTime} = props
+  
 
   useEffect(()=>{
     initTime && setSelectedTime(initTime)
   },[initTime])
 
   const handleTimeChange = (time:Date|null) => {
-    time && setSelectedTime(time)
-    // 要将数据传递出去
+    if(time) {
+      setSelectedTime(time)
+      updateTime(new Date(time).getTime())
+    }
   }
 
   return (

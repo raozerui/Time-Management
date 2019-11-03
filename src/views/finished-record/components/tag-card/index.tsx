@@ -1,23 +1,20 @@
 import React from 'react'
 import style from './tag.module.css'
 import classname from 'classnames'
-import GridItem from '../grid'
+import {TagProps} from '../../../../core/contrains'
+
+import GridItem from '../../../../components/grid'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
 export interface TagCardProps {
-  content: {
-    tag: string,
-    allTime: number,
-    color: 'red'|'orange'|'blue'|'green'
-  }
+  content: TagProps
 }
 
 export function TagCard(props: TagCardProps) {
   const {content} = props
   return (
-    <GridItem xs={12} sm={6} md={3}>
     <Card className={classname(
       style['card'],
       style['card-' + content.color + '-color']
@@ -37,6 +34,5 @@ export function TagCard(props: TagCardProps) {
         </Typography>
       </CardContent>
     </Card>
-  </GridItem>
   )
 }

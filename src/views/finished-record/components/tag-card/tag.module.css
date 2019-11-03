@@ -1,6 +1,11 @@
 .card {
   display: flex;
   background-color: rgba(130, 166, 135, 0.5);
+  height: 90px;
+  width: 23%;
+  margin-left: 1%;
+  margin-right: 1%;
+  margin-bottom: 20px;
 }
 .card-header {
   width: 40%;
