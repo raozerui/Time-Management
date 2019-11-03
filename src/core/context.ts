@@ -59,14 +59,31 @@ export function AddTag (state:RecordState ,payload:string) {
   return {...state}
 }
 
-export function AddData (state:RecordState ,payload:DataProps) {
+export function DeleteTag (state:RecordState ,payload:string) {
+  for (let i =0; i < state.tagList.length; i++) {
+    if(state.tagList[i].tag === payload){
+      state.tagList.splice(i,1)
+      break
+    }
+  }
 
+  for (let i =0; i < state.dataList.length; i++) {
+    if(state.dataList[i].tag === payload) {
+      state.dataList.splice(i, 1)
+    }
+  }
+
+  return {...state}
+}
+
+export function AddData (state:RecordState ,payload:DataProps) {
   for (let i =0; i < state.dataList.length; i++) {
     if(state.dataList[i].startTime > payload.startTime) {
       state.dataList.splice(i, 0, payload)
       break
     }else if(i === state.dataList.length-1) {
       state.dataList.push(payload)
+      break
     }
   }
 
@@ -75,7 +92,6 @@ export function AddData (state:RecordState ,payload:DataProps) {
       state.tagList[index].allTime += (Math.round((payload.endTime - payload.startTime)/(1000*60)))
     }
   })
-  console.log(state)
   return {...state}
 }
 
@@ -84,7 +100,8 @@ export function RecordReducer(state:RecordState, action:ReducerAction) {
     [i:string]: (j:RecordState,k:any) => RecordState
   } ={
     AddTag,
-    AddData
+    AddData,
+    DeleteTag
   }
   return ActionType[action.type](state,action.payload)
 }

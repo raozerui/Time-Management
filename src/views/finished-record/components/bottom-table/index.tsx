@@ -2,88 +2,66 @@ import React,{useState, useContext, useEffect} from 'react'
 import style from './bottomtable.module.css'
 import classnames from 'classnames'
 import {RecordStore} from '../../../../core/context'
-import {DataProps} from '../../../../core/contrains'
+import TableModel from '../../../../core/table.module'
+import {DataProps, TagProps} from '../../../../core/contrains'
 import {TableCustom} from '../../../../components/table'
 import GridItem from '../../../../components/grid'
 import {InputCard} from '../input-card'
 import {Pagination} from '../../../../components/pagination'
+import {TableHeadProps} from '../../../../components/table'
 
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 
 
-//选出表格的指定页数,一般来说应该有一个专门处理复杂数据逻辑的model层
-let startIndex:number = 0
-let endIndex:number = 0
-
-const handleData = (data:DataProps[], amount: number, page: number ):string[][] => {
-  let tableDataList:string[][] = []
-  endIndex = page*amount
-  startIndex = (page-1)*amount
-  if(startIndex > data.length) {
-    startIndex = data.length - 1 - amount
-  }
-  
-  data.slice(startIndex, endIndex).map((item, index)=>{
-    let tableRowData:string[] = []
-    tableRowData.push(item.tag)
-    tableRowData.push(item.content)
-    tableRowData.push(new Date(item.startTime).toTimeString().slice(0,5))
-    tableRowData.push(new Date(item.endTime).toTimeString().slice(0,5))
-
-    tableDataList.push(tableRowData)
-  })
-
-  return tableDataList
-}
-
-// const handleDataAmout = (data: DataProps[], currentData: string[][],amount: number):string[][]=>{
-//   if(currentData.length > amount) {
-//     return currentData.slice(0, amount)
-//   }else {
-//     data.slice(endIndex, endIndex + amount - currentData.length).map((item, index)=>{
-//       let tableRowData:string[] = []
-//       tableRowData.push(item.tag)
-//       tableRowData.push(item.content)
-//       tableRowData.push(new Date(item.startTime).toTimeString().slice(0,5))
-//       tableRowData.push(new Date(item.endTime).toTimeString().slice(0,5))
-  
-//       currentData.push(tableRowData)
-//     })
-//     return currentData
-//   }
-// }
 
 
+// 补充一下数据管理即可
 export function BottomTable() {
   const [amount, setAmount] = useState<number>(10)
+  const [tableHeadData, setTableHeadData] = useState<TableHeadProps[]>()
   const [currentData, setCurrentData] = useState<string[][]>()
   const [page, setPage] = useState<number>(1)
   const [isAdd,setIsAdd ] = useState<boolean>(false)
   const {state} = useContext(RecordStore)
 
   useEffect(()=>{
-    setCurrentData(handleData(state.dataList, amount, page))
-  },[state])
+    TableModel.initTableData(state.dataList)
+    setCurrentData(TableModel.handleData(amount, page))
+  },[state.dataList.length])
+
+  useEffect(()=>{
+    setTableHeadData(TableModel.handleHeadData(state.tagList))
+  },[state.tagList.length])
 
   const addTask = ()=>{
     setIsAdd(true)
   }
 
   const updateData = (num:number)=>{
-    setCurrentData(handleData(state.dataList, amount, num))
+    setCurrentData(TableModel.handleData(amount, num))
     setPage(num)
   }
 
   const updateMount = (num: number)=>{
     if(num !== amount && currentData) {
       setAmount(num)
-      setCurrentData(handleData(state.dataList, num, page))
+      setCurrentData(TableModel.handleData(num, page))
+
       if((page-1)*amount > state.dataList.length) {
-        setPage((Math.ceil(state.dataList.length / num)))
+        setPage(Math.ceil(state.dataList.length / num))
       }
     }
+  }
+
+  const headSelect = (headName: string, tagName:string)=>{
+    if(tagName === '标签') {
+      TableModel.initTableData(state.dataList)
+      setCurrentData(TableModel.handleData(amount, page))
+      return
+    }
+    setCurrentData(TableModel.selectData(state.dataList, amount, tagName))
   }
 
   return(
@@ -92,7 +70,8 @@ export function BottomTable() {
       <Card className={style['card-table']}>
         {currentData && 
           <TableCustom
-          tableHead={["标签", "内容", "起始时间", "结束时间"]}
+          tableHead={tableHeadData||[]}
+          updateHead={(headName:string, tagName: string)=>headSelect(headName, tagName)}
           tableData={currentData}
           />
         }
@@ -106,6 +85,7 @@ export function BottomTable() {
           >
             添加事项
           </Button>
+
           <Pagination 
             allAmount={state.dataList.length}
             currentAmount={amount}

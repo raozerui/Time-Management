@@ -37,6 +37,7 @@ const validation = (task: DataProps):[boolean, string]=>{
   return [true, '']
 }
 
+
 export interface DialogProps {
   isOpen: boolean;
   CloseEvent: () => void;
@@ -44,37 +45,34 @@ export interface DialogProps {
 
 export function InputCard(props: DialogProps) {
   const { CloseEvent, isOpen } = props;
-  // 其实可以考虑将这四部分封装成一个hook，算是一个表单类型
+  // 其实可以考虑将这四部分封装成一个hook，算是一个表单类型，不过要考虑状态更新的问题
   const [tag, setTag] = useState<string>('')
   const [content, setContent] = useState<string>('')
-  const [startTime, setStartTime] = useState<number>(0)
-  const [endTime, setEndTime] = useState<number>(0)
-
+  const [startTime, setStartTime] = useState<number>(new Date().getTime())
+  const [endTime, setEndTime] = useState<number>(new Date().getTime())
   const {state, dispatch} = useContext(RecordStore)
 
+
+  const handleClose = ()=>{
+    CloseEvent()
+    setTag('')
+    setContent('')
+  }
+
   const handleSave = ()=> {
-    const [isOK, msg] = validation({
-      tag,
-      content,
-      startTime,
-      endTime
-    })
+    const [isOK, msg] = validation({tag, content, startTime, endTime})
 
     if(isOK) {
       CloseEvent()
       dispatch({
         type: 'AddData',
-        payload: {
-          tag,
-          content,
-          startTime,
-          endTime
-        }
+        payload: {tag, content, startTime, endTime}
       })
+      setTag('')
+      setContent('')
     }else {
       alert(msg)
     }
-    
   }
 
   return (
@@ -120,7 +118,7 @@ export function InputCard(props: DialogProps) {
           size="large"
           className={classnames(style['button'],style['cancel-button'])}
           startIcon={<DeleteIcon />}
-          onClick={CloseEvent}
+          onClick={handleClose}
         >
           取消
         </Button>
