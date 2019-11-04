@@ -77,15 +77,20 @@ export function DeleteTag (state:RecordState ,payload:string) {
 }
 
 export function AddData (state:RecordState ,payload:DataProps) {
-  for (let i =0; i < state.dataList.length; i++) {
-    if(state.dataList[i].startTime > payload.startTime) {
-      state.dataList.splice(i, 0, payload)
-      break
-    }else if(i === state.dataList.length-1) {
-      state.dataList.push(payload)
-      break
+  if(state.dataList.length>0){
+    for (let i =0; i < state.dataList.length; i++) {
+      if(state.dataList[i].startTime > payload.startTime) {
+        state.dataList.splice(i, 0, payload)
+        break
+      }else if(i === state.dataList.length-1) {
+        state.dataList.push(payload)
+        break
+      }
     }
+  }else {
+    state.dataList.push(payload)
   }
+  
 
   state.tagList.map((item,index)=>{
     if(item.tag === payload.tag) {
