@@ -3,7 +3,7 @@ import style from './bottomtable.module.css'
 import classnames from 'classnames'
 import {RecordStore} from '../../../../core/context'
 import TableModel from '../../../../core/table.module'
-import {DataProps, TagProps} from '../../../../core/contrains'
+
 import {TableCustom} from '../../../../components/table'
 import GridItem from '../../../../components/grid'
 import {InputCard} from '../input-card'
@@ -15,20 +15,17 @@ import Button from '@material-ui/core/Button';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 
 
-
-
-// 补充一下数据管理即可
 export function BottomTable() {
   const [amount, setAmount] = useState<number>(10)
   const [tableHeadData, setTableHeadData] = useState<TableHeadProps[]>()
+  const [tableLen, setTableLen] = useState<number>(0)
   const [currentData, setCurrentData] = useState<string[][]>()
   const [page, setPage] = useState<number>(1)
   const [isAdd,setIsAdd ] = useState<boolean>(false)
   const {state} = useContext(RecordStore)
 
   useEffect(()=>{
-    TableModel.initTableData(state.dataList)
-    setCurrentData(TableModel.handleData(amount, page))
+    headSelect('', '标签')
   },[state.dataList.length])
 
   useEffect(()=>{
@@ -58,10 +55,12 @@ export function BottomTable() {
   const headSelect = (headName: string, tagName:string)=>{
     if(tagName === '标签') {
       TableModel.initTableData(state.dataList)
+      setTableLen(state.dataList.length)
       setCurrentData(TableModel.handleData(amount, page))
       return
     }
     setCurrentData(TableModel.selectData(state.dataList, amount, tagName))
+    setTableLen(TableModel.getTableLen())
   }
 
   return(
@@ -87,7 +86,7 @@ export function BottomTable() {
           </Button>
 
           <Pagination 
-            allAmount={state.dataList.length}
+            allAmount={tableLen}
             currentAmount={amount}
             currentPage={page}
             className={style['page-box']}

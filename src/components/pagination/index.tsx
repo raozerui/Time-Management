@@ -37,6 +37,8 @@ export function Pagination(props: PaginationProps) {
   const {allAmount, currentAmount, currentPage, className, changeMount, changePage} = props
   const [pages, setPages] = useState<number>(1)
 
+  console.log(allAmount)
+
   useEffect(()=>{
     setPages(Math.ceil(allAmount / currentAmount))
   },[allAmount, currentAmount])

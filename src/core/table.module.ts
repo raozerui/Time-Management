@@ -55,6 +55,10 @@ class tableModel {
     return this.tableData.slice(this.startIndex, this.endIndex)
   }
 
+  getTableLen() {
+    return this.tableData.length
+  }
+
 
   //处理头部数据
   handleHeadData(tagList: TagProps[]){
